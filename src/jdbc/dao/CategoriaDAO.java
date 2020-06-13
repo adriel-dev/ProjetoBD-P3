@@ -11,106 +11,92 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.JOptionPane;
-import jdbc.model.Mat_Prima;
-import jdbc.model.Produto;
+import jdbc.model.Categoria;
 import jdbc.util.ConnectionFactory;
 
 /**
  *
  * @author Tigas
  */
-public class Mat_PrimaDAO {
+public class CategoriaDAO {
     
-    public List<Mat_Prima> lerBanco(){
+    public List<Categoria> lerBanco(){
         
         Connection conexao = ConnectionFactory.createConnection();
         PreparedStatement stmt = null;
         ResultSet result = null;
         
-        List<Mat_Prima> matPrimaInfo = new ArrayList<>();
+        List<Categoria> categorias = new ArrayList<>();
         
         try {
-            stmt = conexao.prepareStatement("SELECT id,nome,descricao,qtde,custo,id_fornecedor FROM mat_prima");
+            stmt = conexao.prepareStatement("SELECT id,nome FROM categoria");
             result = stmt.executeQuery();
             
             while(result.next()){
                 
-                Mat_Prima matPrima = new Mat_Prima();
-                matPrima.setId(result.getInt("id"));
-                matPrima.setNome(result.getString("nome"));
-                matPrima.setDescricao(result.getString("descricao"));
-                matPrima.setQtde(result.getInt("qtde"));
-                matPrima.setCusto(result.getDouble("custo"));
-                matPrima.setIdFornecedor(result.getInt("id_fornecedor"));
-                matPrimaInfo.add(matPrima);
+                Categoria categoria = new Categoria();
+                categoria.setId(result.getInt("id"));
+                categoria.setNome(result.getString("nome"));
+                categorias.add(categoria);
                 
             }
         } catch (SQLException ex) {
             /*Logger.getLogger(Produto.class.getName()).log(Level.SEVERE, null, ex);*/
-            JOptionPane.showMessageDialog(null, "Deu merda! (Mat_PrimaDAO)");
+            JOptionPane.showMessageDialog(null, "Deu merda! (CategoriaDAO)");
         }finally{
             ConnectionFactory.closeConnection(conexao, stmt, result);
         }
-        return matPrimaInfo;
+        return categorias;
     }
     
-    public void salva(Mat_Prima matprima){
+     
+     public void salva(Categoria categoria){
         Connection conexao = ConnectionFactory.createConnection();
         PreparedStatement stmt;
         try {
-            String sql = "INSERT INTO mat_prima(nome,descricao,qtde,custo,id_fornecedor) VALUES(?,?,?,?,?)";
+            String sql = "INSERT INTO categoria(nome) VALUE(?)";
             stmt = conexao.prepareStatement(sql);
-            stmt.setString(1, matprima.getNome());
-            stmt.setString(2, matprima.getDescricao());
-            stmt.setInt(3, matprima.getQtde());
-            stmt.setDouble(4, matprima.getCusto());
-            stmt.setInt(5, matprima.getIdFornecedor());
+            stmt.setString(1, categoria.getNome());
             stmt.execute();
             JOptionPane.showMessageDialog(null, "Insert realizado!");
             ConnectionFactory.closeConnection(conexao, stmt);
         }catch (SQLException ex) {
             /*Logger.getLogger(Produto.class.getName()).log(Level.SEVERE, null, ex);*/
-            JOptionPane.showMessageDialog(null, "Deu merda! (Mat_PrimaDAO)");
+            JOptionPane.showMessageDialog(null, "Deu merda! (CategoriaDAO)");
         }
      }
      
-     public void modifica(Mat_Prima matprima){
+     public void modifica(Categoria categoria){
         Connection conexao = ConnectionFactory.createConnection();
         PreparedStatement stmt;
         try {
-            String sql = "UPDATE mat_prima SET nome = ?,descricao = ?,qtde = ?,custo = ?,id_fornecedor = ? WHERE id = ?";
+            String sql = "UPDATE categoria SET nome = ? WHERE id = ?";
             stmt = conexao.prepareStatement(sql);
-            stmt.setString(1, matprima.getNome());
-            stmt.setString(2, matprima.getDescricao());
-            stmt.setInt(3, matprima.getQtde());
-            stmt.setDouble(4, matprima.getCusto());
-            stmt.setInt(5, matprima.getIdFornecedor());
-            stmt.setInt(6, matprima.getId());
+            stmt.setString(1, categoria.getNome());
+            stmt.setInt(2, categoria.getId());
             stmt.execute();
             JOptionPane.showMessageDialog(null, "Update realizado!");
             ConnectionFactory.closeConnection(conexao, stmt);
         }catch (SQLException ex) {
             /*Logger.getLogger(Produto.class.getName()).log(Level.SEVERE, null, ex);*/
-            JOptionPane.showMessageDialog(null, "Deu merda! (Mat_PrimaDAO)");
+            JOptionPane.showMessageDialog(null, "Deu merda! (CategoriaDAO)");
         }
      }
      
-     public void deleta(Mat_Prima matprima){
+     public void deleta(Categoria categoria){
         Connection conexao = ConnectionFactory.createConnection();
         PreparedStatement stmt;
         try {
-            String sql = "DELETE FROM mat_prima WHERE id = ?";
+            String sql = "DELETE FROM categoria WHERE id = ?";
             stmt = conexao.prepareStatement(sql);
-            stmt.setInt(1, matprima.getId());
+            stmt.setInt(1, categoria.getId());
             stmt.execute();
             JOptionPane.showMessageDialog(null, "Delete realizado!");
             ConnectionFactory.closeConnection(conexao, stmt);
         }catch (SQLException ex) {
             /*Logger.getLogger(Produto.class.getName()).log(Level.SEVERE, null, ex);*/
-            JOptionPane.showMessageDialog(null, "Deu merda! (Mat_PrimaDAO)");
+            JOptionPane.showMessageDialog(null, "Deu merda! (CategoriaDAO)");
         }
      }
     
